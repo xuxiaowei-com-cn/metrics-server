@@ -1,0 +1,16 @@
+stages:
+  - docker-build
+
+docker-build:
+  stage: docker-build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker pull registry.k8s.io/metrics-server/metrics-server:v0.6.3 && PULL_RESULT="ok"
+    - if [ "$PULL_RESULT" == "ok" ]; then echo '拉取完成'; else echo '拉取失败' && xxxx; fi
+    - docker images
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+    - docker tag registry.k8s.io/metrics-server/metrics-server:v0.6.3 $DOCKER_USERNAME/metrics-server:v0.6.3
+    - docker images
+    - docker push $DOCKER_USERNAME/metrics-server:v0.6.3
